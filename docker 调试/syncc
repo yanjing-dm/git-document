@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+set -e
+
+[[ -n $1 ]] || (
+  echo >&2 "Please provide the repo name"
+  exit 1
+)
+REPO=$1
+
+[[ -n $2 ]] || (
+  echo >&2 "Please provide the collection device name"
+)
+
+DEVICE=$2
+host_name="dm@$DEVICE.local"
+debug_path=/home/dm/tmp/$(date +"%Y%m%d")/log/ws/src/
+
+echo "sync $REPO to $host_name:$debug_path ..."
+sshpass -p "dm20190731" ssh -o StrictHostKeyChecking=no -tq $host_name mkdir -p $debug_path
+sshpass -p "dm20190731" rsync -avzhP $REPO $host_name:$debug_path
+
